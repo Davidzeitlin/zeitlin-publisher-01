@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>David Zeitlin - Motion Designer | 3D Generalist - {{TITLE_SUFFIX}}</title>
+    <link rel="icon" type="image/ico" href="/img/Favicon.ico">
+    <link rel="canonical" href="https://www.zeitlindavid.com/work/{{SLUG}}">
+        <link rel="preload" href="/font/montserrat-v15-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://player.vimeo.com" crossorigin>
+    <link href="/css/StyleSheet.css?v={{VER}}" rel="stylesheet" type="text/css">
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="{{META_DESC}}">
+    <meta name="keywords" content="David Zeitlin, Generalista 3D, Animador Gráfico, Motion Graphics, Motion Designer, Artista 3D, Audiovisuales, Freelance, Madrid, España.">
+    <meta name="author" content="David Zeitlin">
+    <meta name="copyright" content="David Zeitlin">
+    <meta name="language" content="spanish">
+    <meta name="audience" content="all">
+    <meta name="robots" content="index, all, follow">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="only light">
+
+
+    
+    <!-- Vimeo dns-prefetch for faster load -->
+    <link rel="dns-prefetch" href="https://player.vimeo.com">
+    <link rel="dns-prefetch" href="https://i.vimeocdn.com">
+    <link rel="dns-prefetch" href="https://f.vimeocdn.com">
+
+    <style>
+        @keyframes vimeo-spin {
+            0%  { transform: rotate(0deg); }
+            100%{ transform: rotate(360deg); }
+        }
+    
+        /* ── PROJECT NAV (inline para garantizar render) ──── */
+        .project-nav {
+            max-width: 1000px;
+            margin: 2.5rem auto 1.5rem auto;
+            padding: 0 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 1rem;
+            box-sizing: border-box;
+        }
+        .project-nav a {
+            display: flex !important;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none !important;
+            color: #ffffff !important;
+            opacity: 0.7;
+            font-family: montserrat, sans-serif !important;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 1.2;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid #555555;
+            padding: 10px 17px;
+            border-radius: 2px;
+            flex: 1;
+            max-width: 204px;
+            transition: opacity 0.15s ease, border-color 0.15s ease, text-shadow 0.2s ease, box-shadow 0.2s ease;
+        }
+        .project-nav a:hover { opacity: 1; border-color: #ffffff; }
+        .project-nav .pn-prev { justify-content: flex-start; }
+        .project-nav .pn-next { justify-content: flex-end; text-align: right; }
+        .project-nav svg {
+            width: 20px; height: 20px;
+            fill: none !important;
+            stroke: #ffffff !important;
+            stroke-width: 2;
+            flex-shrink: 0;
+            transition: filter 0.2s ease;
+        }
+        .project-nav .pn-label {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        .project-nav a.pn-click-glow { opacity: 1; border-color: #ffffff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3); }
+        .project-nav a.pn-click-glow .pn-label {
+            text-shadow: 0 0 6px rgba(255,255,255,0.9),
+                         0 0 18px rgba(255,255,255,0.7),
+                         0 0 40px rgba(200,160,255,0.5);
+        }
+        .project-nav a.pn-click-glow svg {
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.95))
+                    drop-shadow(0 0 14px rgba(255,255,255,0.7))
+                    drop-shadow(0 0 30px rgba(200,160,255,0.5));
+        }
+        @media screen and (max-width: 600px) {
+            .project-nav { padding: 0; margin: 2rem auto 1.2rem auto; gap: 0.6rem; }
+            .project-nav a { font-size: 11px; gap: 8px; padding: 9px 12px; }
+            .project-nav svg { width: 20px; height: 20px; }
+        }
+    
+        /* ── FLECHAS FOOTER (inline anti-caché) ──────────────── */
+        .footer-inner {
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 0.75rem;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+        .footer-inner .footer-nav-arrow { pointer-events: auto; }
+        .footer-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 44px; height: 44px;
+            opacity: 0.65;
+            cursor: pointer;
+            transition: opacity 0.15s ease, filter 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .footer-nav-arrow:hover { opacity: 1; }
+        .footer-nav-arrow svg {
+            width: 30px; height: 30px;
+            fill: none !important;
+            stroke: #ffffff !important;
+            stroke-width: 4;
+        }
+        .footer-nav-arrow.fn-prev { left: 0.75rem; }
+        .footer-nav-arrow.fn-next { right: 0.75rem; }
+        .footer-nav-arrow.fn-click-glow { opacity: 1; }
+        .footer-nav-arrow.fn-click-glow svg {
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.95))
+                    drop-shadow(0 0 14px rgba(255,255,255,0.7))
+                    drop-shadow(0 0 30px rgba(200,160,255,0.5));
+        }
+        @media screen and (max-width: 600px) {
+            .footer-nav-arrow { width: 40px; height: 40px; }
+            .footer-nav-arrow svg { width: 27px; height: 27px; }
+            .footer-inner { padding: 0 0.5rem; }
+            .footer-nav-arrow.fn-prev { left: 10px; }
+            .footer-nav-arrow.fn-next { right: calc(10px + 6px); }
+        }
+
+        /* ── GALERÍA DE RENDERS (coral coin) ───────────────────── */
+        .render-gallery {
+            max-width: 1000px !important;
+            margin: 0.4rem auto 0 auto !important;
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+            gap: 0.4rem;
+            padding: 0 0.2rem;
+            box-sizing: border-box;
+        }
+        .render-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 1 / 1;
+            background: #000;
+        }
+        .render-item img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+            aspect-ratio: auto !important;
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+        .render-item:hover img {
+            transform: scale(1.04);
+            filter: brightness(1.08);
+        }
+
+        /* ── LIGHTBOX ──────────────────────────────────────────── */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200000;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+        #lightbox.open {
+            opacity: 1;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.88);
+        }
+        #lightbox-img {
+            max-width: 88vw;
+            max-height: 84vh;
+            object-fit: contain;
+            transform-origin: center center;
+            transform: scale(0.96);
+            transition: transform 0.3s ease;
+            user-select: none;
+            cursor: zoom-in;
+        }
+        #lightbox.open #lightbox-img { transform: scale(1); }
+        #lightbox-img.zoomed { cursor: grab; }
+        #lightbox-img.zoomed.dragging { cursor: grabbing; }
+
+        .lb-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 54px;
+            height: 54px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200001;
+            transition: background 0.15s ease, box-shadow 0.2s ease, border-color 0.15s ease;
+        }
+        .lb-arrow:hover {
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.6);
+        }
+        .lb-arrow svg { width: 20px; height: 20px; fill: #ffffff; }
+        .lb-arrow.lb-prev { left: 24px; }
+        .lb-arrow.lb-next { right: 24px; }
+        /* Glow al hacer click (igual que navbar) */
+        .lb-arrow.lb-click-glow {
+            box-shadow: 0 0 6px rgba(255,255,255,0.9),
+                        0 0 18px rgba(255,255,255,0.7),
+                        0 0 40px rgba(200,160,255,0.4);
+            border-color: #ffffff;
+        }
+        .lb-close {
+            position: fixed;
+            top: 22px;
+            right: 26px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 200001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.15s ease;
+        }
+        .lb-close:hover { opacity: 1; }
+        .lb-close svg { width: 26px; height: 26px; stroke: #fff; stroke-width: 2.4; }
+
+        @media screen and (max-width: 600px) {
+            .lb-arrow { width: 44px; height: 44px; }
+            .lb-arrow.lb-prev { left: 10px; }
+            .lb-arrow.lb-next { right: 10px; }
+            #lightbox-img { max-width: 94vw; max-height: 80vh; }
+        }
+    </style>
+    <style>
+        #neon-canvas {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+        }
+        #neon-canvas.visible { opacity: 1; }
+        @keyframes neon-pulse {
+            0%   { box-shadow: 0 0 8px  rgba(255,255,255,0.45),
+                               0 0 20px rgba(255,255,255,0.2),
+                               0 0 40px rgba(255,255,255,0.08); }
+            50%  { box-shadow: 0 0 14px rgba(255,255,255,0.85),
+                               0 0 32px rgba(255,255,255,0.4),
+                               0 0 60px rgba(255,255,255,0.18); }
+            100% { box-shadow: 0 0 8px  rgba(255,255,255,0.45),
+                               0 0 20px rgba(255,255,255,0.2),
+                               0 0 40px rgba(255,255,255,0.08); }
+        }
+        #neon-overlay {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            animation: neon-pulse 1.0s ease-in-out infinite;
+        }
+        #neon-overlay.visible { opacity: 1; }
+        .box::after { content: none; }
+    </style>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.zeitlindavid.com/work/{{SLUG}}">
+    <meta property="og:title" content="{{OG_TITLE}}">
+    <meta property="og:description" content="{{META_DESC}}">
+    <meta property="og:image" content="{{OG_IMAGE}}">
+    <meta name="twitter:card" content="summary_large_image">
+    </head>
+    
+<body> 
+    
+        <div class="Header"><div class="header-inner">
+        <a href="/"><img src="/img/Logo-David-Zeitlin-Animacion-3D-CGI-Video-Edicion.png" width="50" height="50" alt="Logo David Zeitlin Animacion 3D CGI Video Edicion" title="Logo David Zeitlin Animacion 3D CGI Video Edicion" onmouseover="this.title='';" id="Logo"/></a>
+        <h1 class="Navbar"><a href="/work" class="Navbar" style="color: #">WORK</a> <a href="/about" class="Navbar">ABOUT</a> <a href="/contact" class="Navbar">CONTACT</a></h1>
+        <div class="header-right">
+            <button class="lang-toggle-btn" id="lang-toggle-btn" onclick="toggleLang()">EN</button>
+        </div>
+    </div></div>
+  
+        
+    <div class="bideos">
+        <div class="bideo">
+                    <div class="vimeo-facade" data-video-id="{{VIMEO_ID}}" data-params="color=ffffff&title=0&byline=0&portrait=0&loop=1" style="position:relative; width:100%; padding-bottom:56.25%; background:#000000; cursor:pointer; overflow:hidden;">
+                <img loading="lazy" src="/img/{{THUMB}}" alt="{{THUMB_ALT}}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none'">
+                <div class="vimeo-play-btn" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; background:rgba(0,0,0,0.65); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background 0.2s;" onmouseover="this.style.background='rgba(0,112,255,0.85)'" onmouseout="this.style.background='rgba(0,0,0,0.65)'">
+                    <svg viewBox="0 0 24 24" fill="white" width="32" height="32" style="margin-left:4px"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+                <div class="vimeo-spinner" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:56px; height:56px;">
+                    <svg viewBox="0 0 50 50" style="width:100%; height:100%; animation:vimeo-spin 0.9s linear infinite;">
+                        <circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"
+                            stroke-dasharray="90 60" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Galería de renders estáticos Coral Coin -->
+        <div class="render-gallery" id="render-gallery">
+{{GALLERY_ITEMS}}
+    </div>
+
+
+    <!-- LIGHTBOX CORAL COIN -->
+    <div id="lightbox">
+        <div class="lb-close" id="lb-close">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </div>
+        <div class="lb-arrow lb-prev" id="lb-prev">
+            <svg viewBox="0 0 24 24"><polygon points="15,4 7,12 15,20"/></svg>
+        </div>
+        <img id="lightbox-img" src="" alt="">
+        <div class="lb-arrow lb-next" id="lb-next">
+            <svg viewBox="0 0 24 24"><polygon points="9,4 17,12 9,20"/></svg>
+        </div>
+    </div>
+
+
+
+{{DESCRIPTION_BLOCK}}
+
+<div class="project-nav">
+    <a class="pn-prev" href="https://www.zeitlindavid.com/work/cgi-donuts-callao-gran-via">
+        <svg viewBox="0 0 24 24"><polyline points="15,4 7,12 15,20"/></svg>
+        <span class="pn-label"><span>Previous</span><span>Project</span></span>
+    </a>
+    <a class="pn-next" href="https://www.zeitlindavid.com/work/cgi-generic-assets">
+        <span class="pn-label"><span>Next</span><span>Project</span></span>
+        <svg viewBox="0 0 24 24"><polyline points="9,4 17,12 9,20"/></svg>
+    </a>
+</div>
+
+<div class="wrapper">
+    <div id="grid-container"></div></div>
+
+    
+<div class="cc">    
+  <p class="Copyright"> © <script>document.write( new Date().getFullYear() );</script> David Zeitlin </p>    
+    <img loading="lazy" src="/img/Creative-Commons-Copyright-David_Zeitlin.png" alt="Licencia de Creative Commons" title="Licencia de Creative Commons"/>    
+</div>
+<div class="FooterNav" id="FooterNav">
+    <div class="footer-inner">
+        <a class="footer-nav-arrow fn-prev" href="https://www.zeitlindavid.com/work/cgi-donuts-callao-gran-via" title="Previous Project" aria-label="Previous Project"><svg viewBox="0 0 24 24"><polyline points="15,4 7,12 15,20"/></svg></a>
+        <a class="footer-nav-arrow fn-next" href="https://www.zeitlindavid.com/work/cgi-foxy-games-prime-time-IRE" title="Next Project" aria-label="Next Project"><svg viewBox="0 0 24 24"><polyline points="9,4 17,12 9,20"/></svg></a>
+    </div>
+    <a href="https://www.instagram.com/zeitlin.work/" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/instagram.png" alt="Instagram" class="footer-social-img"/></a>
+    <a href="https://api.whatsapp.com/send?phone=34638738864" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/whatsapp.png" alt="WhatsApp" class="footer-social-img"/></a>
+    <a href="mailto:contacto@zeitlindavid.com" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/email.png" alt="Email" class="footer-social-img"/></a></div>
+    <script>
+    var currentLang = localStorage.getItem('lang') || 'en';
+    function toggleLang() {
+        currentLang = currentLang === 'en' ? 'es' : 'en';
+        localStorage.setItem('lang', currentLang);
+        document.getElementById('lang-toggle-btn').textContent = currentLang === 'en' ? 'EN' : 'ES';
+        var es = document.getElementById('text-es');
+        var en = document.getElementById('text-en');
+        if (es) es.style.display = currentLang === 'es' ? 'block' : 'none';
+        if (en) en.style.display = currentLang === 'en' ? 'block' : 'none';
+    }
+    // Apply saved language on page load
+    (function() {
+        document.getElementById('lang-toggle-btn').textContent = currentLang === 'en' ? 'EN' : 'ES';
+        var es = document.getElementById('text-es');
+        var en = document.getElementById('text-en');
+        if (es) es.style.display = currentLang === 'es' ? 'block' : 'none';
+        if (en) en.style.display = currentLang === 'en' ? 'block' : 'none';
+    })();
+
+    // Ajuste robusto del padding-top: mide la altura REAL del header
+    function setBodyPadding() {
+        var header = document.querySelector('.Header');
+        if (header) {
+            var h = header.offsetHeight;
+            if (h > 0) document.body.style.paddingTop = h + 'px';
+        }
+    }
+    setBodyPadding();
+    window.addEventListener('load', setBodyPadding);
+    window.addEventListener('resize', setBodyPadding);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setBodyPadding);
+    }
+
+    (function() {
+        function launchPlayer(el, muted) {
+            if (el.querySelector('iframe')) return;
+            var id = el.getAttribute('data-video-id');
+            var params = el.getAttribute('data-params') || 'color=ffffff&title=0&byline=0&portrait=0';
+            var playBtn = el.querySelector('.vimeo-play-btn');
+            var spinner = el.querySelector('.vimeo-spinner');
+            var thumb = el.querySelector('img');
+            if (playBtn) playBtn.style.display = 'none';
+            if (spinner) { spinner.style.display = 'block'; spinner.style.zIndex = '3'; }
+            var muteParam = muted ? '&muted=1' : '';
+            var iframe = document.createElement('iframe');
+            iframe.setAttribute('src', 'https://player.vimeo.com/video/' + id + '?' + params + '&autoplay=1&playsinline=1&api=1' + muteParam);
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', '');
+            // Keep iframe invisible until Vimeo fires 'play' - thumbnail stays visible meanwhile
+            iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0;opacity:0;z-index:2;';
+
+            function onVimeoMsg(e) {
+                if (e.origin !== 'https://player.vimeo.com') return;
+                if (e.source !== iframe.contentWindow) return;
+                try {
+                    var data = JSON.parse(e.data);
+                    if (data.event === 'ready') {
+                        // Subscribe to play event
+                        iframe.contentWindow.postMessage(JSON.stringify({method:'addEventListener',value:'play'}), 'https://player.vimeo.com');
+                    }
+                    if (data.event === 'play') {
+                        // Video is actually playing - now show it and hide thumbnail
+                        iframe.style.transition = 'opacity 0.4s';
+                        iframe.style.opacity = '1';
+                        if (spinner) spinner.style.display = 'none';
+                        if (thumb) thumb.style.display = 'none';
+                        window.removeEventListener('message', onVimeoMsg);
+                    }
+                } catch(err) {}
+            }
+            window.addEventListener('message', onVimeoMsg);
+            el.appendChild(iframe);
+        }
+
+        var facades = document.querySelectorAll('.vimeo-facade');
+        if (facades.length > 0) launchPlayer(facades[0], true);
+        facades.forEach(function(el) {
+            el.addEventListener('click', function() { launchPlayer(el, false); });
+        });
+    })();
+
+    (function() {
+        var header = document.querySelector('.Header');
+        var footerNav = document.getElementById('FooterNav');
+        var cc = document.querySelector('.cc');
+        function updateCopyright() {
+            if (!cc || !footerNav) return;
+            var edgeGap = 8;
+            cc.style.bottom = footerNav.classList.contains('hidden') ? edgeGap + 'px' : (footerNav.offsetHeight + edgeGap) + 'px';
+        }
+        var lastScroll = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollEnabled = false;
+        setTimeout(function() { scrollEnabled = true; }, 500);
+        header.classList.remove('hidden');
+        window.addEventListener('scroll', function() {
+            if (!scrollEnabled) return;
+            var current = window.pageYOffset || document.documentElement.scrollTop;
+            if (current <= 0) {
+                header.classList.remove('hidden');
+                if (footerNav) footerNav.classList.remove('hidden');
+            } else if (current > lastScroll + 5) {
+                header.classList.add('hidden');
+                if (footerNav) footerNav.classList.remove('hidden');
+            } else if (current < lastScroll - 5) {
+                header.classList.remove('hidden');
+                if (footerNav) footerNav.classList.add('hidden');
+            }
+            lastScroll = current;
+            updateCopyright();
+        });
+        window.addEventListener('load', updateCopyright);
+        window.addEventListener('resize', updateCopyright);
+    })();
+    </script>
+        <script>
+    (function() {
+        var canvas = document.createElement('canvas');
+        canvas.id = 'neon-canvas';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        var overlay = document.createElement('div');
+        overlay.id = 'neon-overlay';
+        document.body.appendChild(overlay);
+        var targetEl = null, rafId = null;
+        var PERIOD = (('ontouchstart' in window)||navigator.maxTouchPoints>0)?250:2000, TAIL = 1.24;
+        var globalStartTime = null;
+        function getPoint(pos, ox, oy, w, h) {
+            var perimeter = 2*(w+h);
+            var d = ((pos%1)+1)%1*perimeter;
+            if (d<=w)          return {x:ox+d,         y:oy};
+            else if (d<=w+h)   return {x:ox+w,         y:oy+(d-w)};
+            else if (d<=2*w+h) return {x:ox+w-(d-w-h), y:oy+h};
+            else               return {x:ox,            y:oy+h-(d-2*w-h)};
+        }
+        function lerp(a,b,t){return a+(b-a)*t;}
+        function updatePos() {
+            if (!targetEl) return;
+            var r = targetEl.getBoundingClientRect();
+            overlay.style.left=r.left+'px'; overlay.style.top=r.top+'px';
+            overlay.style.width=r.width+'px'; overlay.style.height=r.height+'px';
+            canvas.style.left=r.left+'px'; canvas.style.top=r.top+'px';
+        }
+        function drawFrame(ts) {
+            if (!targetEl) return;
+            if (!globalStartTime) globalStartTime = ts;
+            var r = targetEl.getBoundingClientRect();
+            overlay.style.left=r.left+'px'; overlay.style.top=r.top+'px';
+            overlay.style.width=r.width+'px'; overlay.style.height=r.height+'px';
+            canvas.style.left=r.left+'px'; canvas.style.top=r.top+'px';
+            canvas.width=r.width; canvas.height=r.height;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            var headPos=((ts-globalStartTime)%PERIOD)/PERIOD;
+            for (var s=0;s<200;s++) {
+                var t=s/200;
+                var alpha=Math.pow(t,2.4);
+                if(alpha<0.015) continue;
+                var p0=getPoint((headPos-TAIL*(1-t)+4)%1,0,0,r.width,r.height);
+                var p1=getPoint((headPos-TAIL*(1-(s+1)/200)+4)%1,0,0,r.width,r.height);
+                var lw=lerp(0.0,5.68,t);
+                ctx.shadowBlur = t>0.68 ? lerp(0,21.6,(t-0.68)/0.32) : 0;
+                ctx.shadowColor='rgba(255,255,255,1)';
+                ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.lineTo(p1.x,p1.y);
+                ctx.strokeStyle='rgba(255,255,255,'+alpha+')';
+                ctx.lineWidth=lw; ctx.lineCap='round'; ctx.stroke();
+            }
+            ctx.shadowBlur=0;
+            rafId=requestAnimationFrame(drawFrame);
+        }
+        function showGlow(t) {
+            targetEl=t;
+            canvas.classList.add('visible'); overlay.classList.add('visible');
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId=requestAnimationFrame(drawFrame);
+        }
+        function hideGlow() {
+            canvas.style.transition='none'; overlay.style.transition='none';
+            canvas.classList.remove('visible'); overlay.classList.remove('visible');
+            if (rafId){cancelAnimationFrame(rafId);rafId=null;}
+            targetEl=null; ctx.clearRect(0,0,canvas.width,canvas.height);
+            requestAnimationFrame(function(){canvas.style.transition='';overlay.style.transition='';});
+        }
+        document.querySelectorAll('.grid li');  // (binding por delegacion abajo)
+        // ── Delegacion de eventos: el cometa funciona aunque global.js
+        //    construya el grid despues (script deferido). Escuchamos en
+        //    document y resolvemos el .grid li al vuelo. ──
+        var _cometLi = null;
+        document.addEventListener('mouseover', function(e){
+            if (!e.target.closest) return;
+            var li = e.target.closest('.grid li');
+            if (!li || li === _cometLi) return;
+            _cometLi = li;
+            var tgt = li.querySelector('video')||li.querySelector('img')||li.querySelector('.box')||li;
+            showGlow(tgt);
+        });
+        document.addEventListener('mouseout', function(e){
+            if (!_cometLi || !e.target.closest) return;
+            var li = e.target.closest('.grid li');
+            if (!li || li !== _cometLi) return;
+            if (e.relatedTarget && li.contains(e.relatedTarget)) return;
+            _cometLi = null;
+            hideGlow();
+        });
+        document.addEventListener('pointerdown', function(e){
+            if (!e.target.closest) return;
+            var li = e.target.closest('.grid li');
+            if (!li) return;
+            var tgt = li.querySelector('video')||li.querySelector('img')||li.querySelector('.box')||li;
+            showGlow(tgt);
+        }, {passive:true});
+        document.addEventListener('touchstart', function(e){
+            if (!e.target.closest) return;
+            var li = e.target.closest('.grid li');
+            if (!li) return;
+            var tgt = li.querySelector('video')||li.querySelector('img')||li.querySelector('.box')||li;
+            showGlow(tgt);
+        }, {passive:true});
+        document.addEventListener('touchend', function(e){
+            if (!e.target.closest) return;
+            var li = e.target.closest('.grid li');
+            if (!li) return;
+            setTimeout(hideGlow, 600);
+        }, {passive:true});
+        // Scroll gestionado por global.js
+        document.addEventListener('visibilitychange',function(){if(document.hidden)hideGlow();});
+    })();
+    </script>
+    <script src="/global.js?v={{VER}}" defer></script>
+    <script>
+    // Project-nav glow inline (garantía anti-caché)
+    (function() {
+        document.querySelectorAll('.project-nav a').forEach(function(a) {
+            function pnGlow() {
+                a.classList.add('pn-click-glow');
+                setTimeout(function(){ a.classList.remove('pn-click-glow'); }, 600);
+            }
+            a.addEventListener('mousedown', pnGlow);
+            a.addEventListener('touchstart', pnGlow, {passive:true});
+        });
+    })();
+    </script>
+    <script>
+    // Footer arrow glow inline (anti-caché)
+    (function() {
+        document.querySelectorAll('.footer-nav-arrow').forEach(function(a) {
+            function fnGlow() {
+                a.classList.add('fn-click-glow');
+                setTimeout(function(){ a.classList.remove('fn-click-glow'); }, 600);
+            }
+            a.addEventListener('mousedown', fnGlow);
+            a.addEventListener('touchstart', fnGlow, {passive:true});
+        });
+    })();
+    </script>
+    <script>
+    (function() {
+        var gallery = document.getElementById('render-gallery');
+        if (!gallery) return;
+        var imgs    = Array.prototype.slice.call(gallery.querySelectorAll('img'));
+        var sources = imgs.map(function(im){ return im.getAttribute('src'); });
+        var lightbox = document.getElementById('lightbox');
+        var lbImg    = document.getElementById('lightbox-img');
+        var btnPrev  = document.getElementById('lb-prev');
+        var btnNext  = document.getElementById('lb-next');
+        var btnClose = document.getElementById('lb-close');
+        var current  = 0;
+        var ZOOM_SCALE = 2.5, zoomed = false, panX = 0, panY = 0;
+        var isDragging = false, dragStartX, dragStartY, panStartX, panStartY, clickMoved = false;
+        function applyTransform() {
+            lbImg.style.transform = zoomed ? 'scale('+ZOOM_SCALE+') translate('+panX+'px,'+panY+'px)' : 'scale(1)';
+        }
+        function resetZoom() {
+            zoomed = false; panX = 0; panY = 0;
+            lbImg.classList.remove('zoomed','dragging');
+            lbImg.style.transition = 'transform 0.25s ease';
+            applyTransform();
+        }
+        function show(i) {
+            current = (i + sources.length) % sources.length;
+            resetZoom();
+            lbImg.src = sources[current];
+        }
+        function openLB(i) { show(i); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeLB() { resetZoom(); lightbox.classList.remove('open'); document.body.style.overflow = ''; }
+        function arrowGlow(btn) { btn.classList.add('lb-click-glow'); setTimeout(function(){ btn.classList.remove('lb-click-glow'); }, 250); }
+        lbImg.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (clickMoved) { clickMoved = false; return; }
+            if (zoomed) { resetZoom(); } else {
+                var rect = lbImg.getBoundingClientRect();
+                var cx = (e.clientX - rect.left - rect.width/2) / ZOOM_SCALE;
+                var cy = (e.clientY - rect.top  - rect.height/2) / ZOOM_SCALE;
+                panX = -cx; panY = -cy; zoomed = true;
+                lbImg.classList.add('zoomed');
+                lbImg.style.transition = 'transform 0.25s ease';
+                applyTransform();
+            }
+        });
+        lbImg.addEventListener('mousedown', function(e) {
+            if (!zoomed) return; e.preventDefault();
+            isDragging = true; clickMoved = false;
+            dragStartX = e.clientX; dragStartY = e.clientY;
+            panStartX = panX; panStartY = panY;
+            lbImg.classList.add('dragging'); lbImg.style.transition = 'none';
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            var dx = (e.clientX-dragStartX)/ZOOM_SCALE, dy = (e.clientY-dragStartY)/ZOOM_SCALE;
+            if (Math.abs(dx)>2||Math.abs(dy)>2) clickMoved = true;
+            panX = panStartX+dx; panY = panStartY+dy; applyTransform();
+        });
+        document.addEventListener('mouseup', function() {
+            if (!isDragging) return; isDragging = false;
+            lbImg.classList.remove('dragging'); lbImg.style.transition = 'transform 0.1s ease';
+        });
+        var touchStart = null;
+        lbImg.addEventListener('touchstart', function(e) { if (!zoomed||e.touches.length!==1) return; touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY,px:panX,py:panY}; },{passive:true});
+        lbImg.addEventListener('touchmove', function(e) { if (!zoomed||!touchStart||e.touches.length!==1) return; e.preventDefault(); var dx=(e.touches[0].clientX-touchStart.x)/ZOOM_SCALE,dy=(e.touches[0].clientY-touchStart.y)/ZOOM_SCALE; panX=touchStart.px+dx; panY=touchStart.py+dy; lbImg.style.transition='none'; applyTransform(); },{passive:false});
+        lbImg.addEventListener('touchend', function(){ touchStart=null; },{passive:true});
+        imgs.forEach(function(im,i){ im.addEventListener('click',function(){ openLB(i); }); });
+        btnPrev.addEventListener('click', function(e){ e.stopPropagation(); arrowGlow(btnPrev); show(current-1); });
+        btnNext.addEventListener('click', function(e){ e.stopPropagation(); arrowGlow(btnNext); show(current+1); });
+        btnClose.addEventListener('click', function(e){ e.stopPropagation(); closeLB(); });
+        lightbox.addEventListener('click', function(e){ if(e.target===lightbox) closeLB(); });
+        document.addEventListener('keydown', function(e){
+            if (!lightbox.classList.contains('open')) return;
+            if (e.key==='ArrowLeft')  { arrowGlow(btnPrev); show(current-1); }
+            if (e.key==='ArrowRight') { arrowGlow(btnNext); show(current+1); }
+            if (e.key==='Escape')     closeLB();
+        });
+    })();
+    </script>
+</body>
+</html>

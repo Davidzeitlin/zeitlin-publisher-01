@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publicar · zeitlindavid.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a; --surface:#141414; --surface-2:#1b1b1b;
+    --line:#2a2a2a; --line-soft:#202020;
+    --text:#f4f4f4; --text-dim:#8c8c8c; --text-faint:#565656;
+    --accent:#0070ff; --accent-soft:rgba(0,112,255,0.14); --accent-line:rgba(0,112,255,0.5);
+    --ok:#1f9d57; --warn:#d98a2b;
+    --r:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased}
+  body{line-height:1.5;padding-bottom:120px}
+  ::selection{background:var(--accent-soft)}
+
+  /* ── Cabecera ── */
+  header{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:16px;
+    padding:18px 32px;background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft);
+  }
+  .mark{width:34px;height:34px;border:1.5px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .mark svg{width:18px;height:20px}
+  header h1{font-size:14px;font-weight:600;letter-spacing:0.04em}
+  header .sub{font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-faint);margin-left:2px}
+  #btn-settings{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .15s}
+  #btn-settings:hover{border-color:var(--accent-line);color:var(--text);background:var(--accent-soft)}
+
+  /* ── Modal de ajustes ── */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:60px 20px;overflow:auto}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--bg);border:1px solid var(--line);border-radius:16px;max-width:560px;width:100%;padding:32px}
+  .modal h2{font-size:18px;font-weight:600;margin-bottom:6px}
+  .modal .modal-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px;line-height:1.5}
+  .modal .group{margin-bottom:22px}
+  .modal .group h3{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .modal .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#555;margin-left:8px}
+  .modal .status-dot.ok{background:#2ecc71}
+  .modal-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:8px}
+  .btn-save{background:var(--accent);color:#fff;border:none;font-family:inherit;font-size:13px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer}
+  .btn-cancel{background:transparent;color:var(--text-dim);border:1px solid var(--line);font-family:inherit;font-size:13px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer}
+
+  main{max-width:760px;margin:0 auto;padding:40px 32px}
+
+  /* ── Secciones ── */
+  section{margin-bottom:44px}
+  .eyebrow{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+  .eyebrow .num{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:0.1em;font-variant-numeric:tabular-nums}
+  .eyebrow .label{font-size:12px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim)}
+  .eyebrow .hint{margin-left:auto;font-size:11px;color:var(--text-faint);font-weight:500}
+
+  /* ── Selector de tipo ── */
+  .types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .type{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px 16px;cursor:pointer;text-align:left;transition:all .15s ease;color:var(--text)
+  }
+  .type:hover{border-color:#3a3a3a;background:var(--surface-2)}
+  .type.active{border-color:var(--accent-line);background:var(--accent-soft)}
+  .type .ic{font-size:18px;margin-bottom:10px;display:block;opacity:.9}
+  .type .t{font-size:13px;font-weight:600;margin-bottom:3px}
+  .type .d{font-size:11px;color:var(--text-dim);line-height:1.4}
+
+  /* ── Zona de entrada ── */
+  .field{margin-bottom:22px}
+  .field > label{display:block;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+  .input,.textarea{
+    width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);
+    color:var(--text);font-family:inherit;font-size:15px;padding:8px 2px;transition:border-color .15s
+  }
+  .input:focus,.textarea:focus{outline:none;border-bottom-color:var(--accent)}
+  .input::placeholder,.textarea::placeholder{color:var(--text-faint)}
+  .textarea{resize:none;line-height:1.6;min-height:46px;overflow:hidden}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .help{font-size:11px;color:var(--text-faint);margin-top:6px}
+  .auto-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 7px;border-radius:20px;margin-left:8px;vertical-align:middle}
+  .auto-tag::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
+
+  /* ── Drop ── */
+  .drop{
+    border:1.5px dashed var(--line);border-radius:var(--r);padding:30px;text-align:center;
+    color:var(--text-dim);cursor:pointer;transition:all .15s;background:var(--surface)
+  }
+  .drop:hover,.drop.over{border-color:var(--accent-line);background:var(--accent-soft);color:var(--text)}
+  .drop .big{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+  .drop .small{font-size:12px}
+
+  /* ── Galeria reordenable ── */
+  .gal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .gal-head .count{font-size:12px;color:var(--text-dim)}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+  .thumb{
+    position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--line);
+    cursor:grab;background:var(--surface-2);transition:transform .12s,border-color .12s,opacity .12s
+  }
+  .thumb:active{cursor:grabbing}
+  .thumb.dragging{opacity:.4;border-color:var(--accent)}
+  .thumb.drop-target{border-color:var(--accent);transform:scale(1.03)}
+  .thumb .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .thumb .idx{
+    position:absolute;top:6px;left:6px;z-index:2;background:rgba(0,0,0,0.75);color:#fff;
+    font-size:11px;font-weight:700;width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums
+  }
+  .thumb .name{position:absolute;left:0;right:0;bottom:0;font-size:9px;padding:4px 6px;background:linear-gradient(transparent,rgba(0,0,0,0.85));color:#cfcfcf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thumb .rm{position:absolute;top:6px;right:6px;z-index:2;width:20px;height:20px;border-radius:5px;background:rgba(0,0,0,0.7);color:#fff;border:none;cursor:pointer;font-size:13px;line-height:1;opacity:0;transition:opacity .12s}
+  .thumb:hover .rm{opacity:1}
+
+  /* ── Barra publicar ── */
+  .publish-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    display:flex;align-items:center;gap:20px;
+    padding:18px 32px;background:rgba(10,10,10,0.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line)
+  }
+  .publish-bar .status{font-size:12px;color:var(--text-dim);flex:1}
+  .publish-bar .status b{color:var(--text);font-weight:600}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:13px 22px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .btn-ghost:hover{border-color:#3a3a3a;color:var(--text)}
+  .btn-publish{
+    background:var(--accent);border:none;color:#fff;font-family:inherit;font-size:13px;font-weight:700;
+    letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;border-radius:8px;cursor:pointer;transition:all .15s
+  }
+  .btn-publish:hover{box-shadow:0 0 0 3px var(--accent-soft)}
+  .btn-publish:disabled{background:#222;color:var(--text-faint);cursor:not-allowed;box-shadow:none}
+
+  .hidden{display:none !important}
+  .lang-split{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .lang-split .tag{font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--text-faint);text-transform:uppercase;margin-bottom:10px;display:block}
+
+  /* ── Traduccion ── */
+  .translate-bar{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 26px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+  .tr-btn{background:transparent;border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.06em;padding:8px 14px;border-radius:7px;cursor:pointer;transition:all .15s}
+  .tr-btn:hover{border-color:var(--accent-line);color:var(--text);background:var(--accent-soft)}
+  .tr-sep{width:1px;height:20px;background:var(--line)}
+  .tr-switch{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+  .tr-switch input{display:none}
+  .tr-slider{width:36px;height:20px;border-radius:20px;background:#333;position:relative;transition:background .2s;flex:0 0 auto}
+  .tr-slider::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#888;transition:all .2s}
+  .tr-switch input:checked + .tr-slider{background:var(--accent)}
+  .tr-switch input:checked + .tr-slider::after{left:18px;background:#fff}
+  .tr-switch .tr-text{font-size:11px;font-weight:600;color:var(--text-dim);letter-spacing:0.04em}
+  .tr-switch input:checked ~ .tr-text{color:var(--text)}
+
+  @media(max-width:680px){.row2,.lang-split{grid-template-columns:1fr}.types{grid-template-columns:1fr}.translate-bar{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">
+    <svg viewBox="0 0 40 44" fill="none" stroke="#f4f4f4" stroke-width="2"><path d="M8 6h24M14 6v8l-6 24h24l-6-24V6"/></svg>
+  </div>
+  <h1>Publicar proyecto</h1>
+  <span class="sub">zeitlindavid.com</span>
+  <button id="btn-settings" title="Ajustes">⚙ Ajustes</button>
+</header>
+
+<main>
+  <!-- 01 · TIPO -->
+  <section>
+    <div class="eyebrow"><span class="num">01</span><span class="label">Tipo de proyecto</span></div>
+    <div class="types">
+      <button class="type active" data-type="video">
+        <span class="ic">▶</span><span class="t">Solo vídeo</span>
+        <span class="d">Reproductor arriba, texto debajo</span>
+      </button>
+      <button class="type" data-type="video-images">
+        <span class="ic">▶ ▦</span><span class="t">Vídeo e imágenes</span>
+        <span class="d">Vídeo, galería y texto</span>
+      </button>
+      <button class="type" data-type="images">
+        <span class="ic">▦</span><span class="t">Solo imágenes</span>
+        <span class="d">Texto arriba, galería debajo</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 02 · VIDEO -->
+  <section id="sec-source">
+    <div class="eyebrow"><span class="num">02</span><span class="label">Vídeo</span><span class="hint" id="source-hint">Se sube a Vimeo · de él sale el clip del grid</span></div>
+    <div class="field" id="field-clip">
+      <label>Vídeo del proyecto</label>
+      <div class="drop" id="drop-clip"><div class="big">Arrastra aquí el mp4</div><div class="small">El mismo vídeo se sube a Vimeo y genera el clip de poses del grid</div></div>
+    </div>
+    <div class="field" id="field-vimeo">
+      <label>¿Ya está en Vimeo? <span style="text-transform:none;font-weight:400;letter-spacing:0;color:var(--text-faint)">Pega el enlace y nos saltamos la subida</span></label>
+      <input class="input" id="vimeo-url" placeholder="https://vimeo.com/…">
+    </div>
+  </section>
+
+  <!-- TEXTOS -->
+  <section id="sec-texts">
+    <div class="eyebrow"><span class="num">03</span><span class="label">Textos</span><span class="hint">Revisa lo que trajo Vimeo antes de publicar</span></div>
+    <div class="field">
+      <label>Título del proyecto <span class="auto-tag">de Vimeo</span></label>
+      <input class="input" id="title" value="Coral Coins & Rewards Grabber">
+    </div>
+    <div class="field">
+      <label>Dirección en la web (slug)</label>
+      <input class="input" id="slug" value="cgi-coral-coin-rewards-grabber">
+      <div class="help">zeitlindavid.com/work/<span id="slug-echo">cgi-coral-coin-rewards-grabber</span></div>
+    </div>
+    <div class="lang-split">
+      <div>
+        <span class="tag">Descripción · Español</span>
+        <div class="field"><label>Título</label><input class="input" id="title-es" value="Coral Coins & Rewards Grabber"></div>
+        <div class="field"><label>Texto <span class="auto-tag">de Vimeo</span></label><textarea class="textarea" id="desc-es" rows="4">Desarrollo 3D del sistema de economía de Coral y su Rewards Grabber: look development, modelado, texturizado, iluminación, render y animación.</textarea></div>
+      </div>
+      <div>
+        <span class="tag">Descripción · English</span>
+        <div class="field"><label>Title</label><input class="input" id="title-en" value="Coral Coins & Rewards Grabber"></div>
+        <div class="field"><label>Text <span class="auto-tag">from Vimeo</span></label><textarea class="textarea" id="desc-en" rows="4">3D animation for Coral's economy system and Rewards Grabber: look development, modelling, texturing, lighting, rendering, still renders and animations.</textarea></div>
+      </div>
+    </div>
+    <div class="translate-bar">
+      <button class="tr-btn" id="tr-es-en">Español → English</button>
+      <button class="tr-btn" id="tr-en-es">English → Español</button>
+      <span class="tr-sep"></span>
+      <label class="tr-switch">
+        <input type="checkbox" id="tr-auto"><span class="tr-slider"></span>
+        <span class="tr-text">Traducir automático</span>
+      </label>
+    </div>
+    <div class="field">
+      <label>Meta descripción (SEO) <span class="auto-tag">desde tu descripción</span></label>
+      <textarea class="textarea" id="meta" rows="2">Coral Coins & Rewards Grabber - 3D animation for Coral's economy system and Rewards Grabber by David Zeitlin: look development, modelling, texturing, lighting, rendering.</textarea>
+      <div class="help">Texto que verá Google en sus resultados. No son las etiquetas de Vimeo.</div>
+    </div>
+  </section>
+
+  <!-- IMAGENES -->
+  <section id="sec-images" class="hidden">
+    <div class="eyebrow"><span class="num">04</span><span class="label">Imágenes de la galería</span><span class="hint">Arrastra para ordenar · de arriba a abajo en la web</span></div>
+    <div class="field">
+      <label>Nombre de los renders <span class="auto-tag">se pasa a formato web</span></label>
+      <input class="input" id="render-name" value="coral rewards club render">
+      <div class="help">Escríbelo con espacios. Se convierte a guiones y se numera por orden: <span id="name-echo" style="color:var(--text-dim)"></span></div>
+    </div>
+    <div class="gal-head">
+      <span class="count" id="gal-count">0 imágenes</span>
+    </div>
+    <div class="gallery" id="gallery"></div>
+    <div class="drop" id="drop-images" style="margin-top:14px"><div class="big">Arrastra aquí los renders</div><div class="small">Se publican y se nombran en el orden que les des arriba</div></div>
+  </section>
+</main>
+
+<div class="publish-bar">
+  <div class="status" id="status">Arrastra el vídeo para empezar</div>
+  <button class="btn-ghost" id="btn-vimeo">Subir a Vimeo</button>
+  <button class="btn-publish" id="btn-publish">Publicar proyecto</button>
+</div>
+
+<div class="modal-bg" id="settings-modal">
+  <div class="modal">
+    <h2>Ajustes</h2>
+    <p class="modal-sub">Tus credenciales se guardan solo en este equipo y no se comparten con nadie. Se ponen una vez y la app las recuerda.</p>
+    <div class="group">
+      <h3>Vimeo <span class="status-dot" id="dot-vimeo"></span></h3>
+      <div class="field"><label>Token personal (subir + editar)</label><input class="input" id="cfg-vimeo" placeholder="Pega aquí el token de Vimeo"></div>
+    </div>
+    <div class="group">
+      <h3>DeepL <span class="status-dot" id="dot-deepl"></span></h3>
+      <div class="field"><label>Clave de API</label><input class="input" id="cfg-deepl" placeholder="Pega aquí la clave de DeepL"></div>
+    </div>
+    <div class="group">
+      <h3>Hostinger · FTP <span class="status-dot" id="dot-ftp"></span></h3>
+      <div class="field"><label>Host</label><input class="input" id="cfg-ftp-host" placeholder="ftp.zeitlindavid.com"></div>
+      <div class="row2">
+        <div class="field"><label>Usuario</label><input class="input" id="cfg-ftp-user"></div>
+        <div class="field"><label>Contraseña</label><input class="input" id="cfg-ftp-pass" type="password"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cfg-cancel">Cancelar</button>
+      <button class="btn-save" id="cfg-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Estado ──
+const state = { type:'video', images:[], videoPath:null };
+// REAL = dentro de la app (Electron). Si no, modo demo en el navegador.
+const REAL = typeof window!=='undefined' && !!window.api;
+
+// ── Tipo de proyecto ──
+const secImages = document.getElementById('sec-images');
+const fieldVimeo = document.getElementById('field-vimeo');
+const fieldClip = document.getElementById('field-clip');
+const sourceHint = document.getElementById('source-hint');
+
+document.querySelectorAll('.type').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.type').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.type = btn.dataset.type;
+    applyType();
+  });
+});
+
+function applyType(){
+  const hasVideo = state.type==='video' || state.type==='video-images';
+  const hasImages = state.type==='images' || state.type==='video-images';
+  document.getElementById('sec-source').classList.toggle('hidden', !hasVideo);
+  secImages.classList.toggle('hidden', !hasImages);
+  document.getElementById('btn-vimeo').classList.toggle('hidden', !hasVideo);
+  if(hasVideo && hasImages) sourceHint.textContent='Se sube a Vimeo · galería aparte abajo';
+  else if(hasVideo) sourceHint.textContent='Se sube a Vimeo · de él sale el clip del grid';
+  // Reordenar las secciones igual que apareceran en la web
+  const main=document.querySelector('main');
+  const order={
+    'video':['sec-source','sec-texts'],
+    'video-images':['sec-source','sec-images','sec-texts'],
+    'images':['sec-texts','sec-images'],
+  }[state.type];
+  order.forEach(id=>main.appendChild(document.getElementById(id)));
+  renumber();
+  if(hasImages){ if(state.images.length===0) seedDemoImages(); else renderGallery(); }
+}
+
+// Renumera los pasos visibles (01, 02, 03...) saltando los ocultos
+function renumber(){
+  let n=1;
+  document.querySelectorAll('main > section').forEach(sec=>{
+    if(sec.classList.contains('hidden')) return;
+    const num=sec.querySelector('.eyebrow .num');
+    if(num) num.textContent=String(n++).padStart(2,'0');
+  });
+}
+
+// ── Textareas auto-altura ──
+document.querySelectorAll('.textarea').forEach(ta=>{
+  const fit=()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'};
+  ta.addEventListener('input',fit); requestAnimationFrame(fit);
+});
+
+// ── Slug echo ──
+const slug=document.getElementById('slug'), slugEcho=document.getElementById('slug-echo');
+slug.addEventListener('input',()=>slugEcho.textContent=slug.value||'…');
+
+// ── Galeria reordenable ──
+const gallery=document.getElementById('gallery'), galCount=document.getElementById('gal-count');
+const renderName=document.getElementById('render-name'), nameEcho=document.getElementById('name-echo');
+// slugify y nombre SEO (espejo de la logica real de la app)
+function slugify(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
+function seoName(base,i,ext){return slugify(base||'render')+'-'+String(i+1).padStart(2,'0')+'-david-zeitlin.'+(ext||'jpg')}
+function seedDemoImages(){
+  state.images = Array.from({length:6},(_,i)=>({ext:'jpg',hue:(i*47)%360}));
+  renderGallery();
+}
+function renderGallery(){
+  gallery.innerHTML='';
+  const base=renderName?renderName.value:'render';
+  state.images.forEach((img,i)=>{
+    const fname=seoName(base,i,img.ext);
+    const hue = img.hue!==undefined ? img.hue : (i*47)%360;
+    const el=document.createElement('div');
+    el.className='thumb'; el.draggable=true; el.dataset.i=i;
+    el.innerHTML=`
+      <div class="ph" style="background:linear-gradient(135deg,hsl(${hue},45%,28%),hsl(${(hue+40)%360},40%,18%))"></div>
+      <span class="idx">${String(i+1).padStart(2,'0')}</span>
+      <button class="rm" title="Quitar">×</button>
+      <span class="name">${fname}</span>`;
+    el.querySelector('.rm').addEventListener('click',ev=>{ev.stopPropagation();state.images.splice(i,1);renderGallery();});
+    addDrag(el);
+    gallery.appendChild(el);
+  });
+  galCount.textContent=`${state.images.length} ${state.images.length===1?'imagen':'imágenes'}`;
+  if(nameEcho) nameEcho.textContent=seoName(base,0,'jpg');
+}
+if(renderName) renderName.addEventListener('input',renderGallery);
+let dragEl=null;
+function addDrag(el){
+  el.addEventListener('dragstart',()=>{dragEl=el;el.classList.add('dragging')});
+  el.addEventListener('dragend',()=>{el.classList.remove('dragging');document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('drop-target'))});
+  el.addEventListener('dragover',e=>{e.preventDefault();if(el!==dragEl)el.classList.add('drop-target')});
+  el.addEventListener('dragleave',()=>el.classList.remove('drop-target'));
+  el.addEventListener('drop',e=>{
+    e.preventDefault();
+    const from=+dragEl.dataset.i, to=+el.dataset.i;
+    const [moved]=state.images.splice(from,1);
+    state.images.splice(to,0,moved);
+    renderGallery();
+  });
+}
+
+// ── Drop zones (demo) ──
+['drop-clip','drop-images'].forEach(id=>{
+  const d=document.getElementById(id);
+  d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('over')});
+  d.addEventListener('dragleave',()=>d.classList.remove('over'));
+  d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over')});
+});
+
+// ── Traducción ──
+const trAuto=document.getElementById('tr-auto');
+async function doTranslate(dir){
+  const s=document.getElementById('status');
+  const fromId = dir==='es-en' ? 'desc-es' : 'desc-en';
+  const toId   = dir==='es-en' ? 'desc-en' : 'desc-es';
+  const target = dir==='es-en' ? 'en' : 'es';
+  const fromEl=document.getElementById(fromId), toEl=document.getElementById(toId);
+  if(REAL){
+    try{
+      s.textContent='Traduciendo…';
+      toEl.value = await window.api.translate(fromEl.value, target);
+      s.textContent='Traducido ✓';
+    }catch(e){ s.textContent='Error de traducción: '+e.message; }
+  }else{
+    const from=dir==='es-en'?'español':'inglés', to=dir==='es-en'?'inglés':'español';
+    s.innerHTML=`<b>Traduciendo de ${from} a ${to}…</b> (demo) En la app usa DeepL y rellena el otro idioma.`;
+  }
+}
+document.getElementById('tr-es-en').addEventListener('click',()=>doTranslate('es-en'));
+document.getElementById('tr-en-es').addEventListener('click',()=>doTranslate('en-es'));
+// Con el switch activado, traduce solo al dejar de escribir en español
+let trTimer=null;
+document.getElementById('desc-es').addEventListener('input',()=>{
+  if(!trAuto.checked || !REAL) return;
+  clearTimeout(trTimer); trTimer=setTimeout(()=>doTranslate('es-en'),900);
+});
+trAuto.addEventListener('change',()=>{
+  const s=document.getElementById('status');
+  s.textContent = trAuto.checked
+    ? 'Traducción automática activada: al escribir en español, el inglés se rellena solo'
+    : 'Traducción automática desactivada: cada idioma es independiente';
+});
+
+// ── Subir a Vimeo ──
+document.getElementById('btn-vimeo').addEventListener('click',async ()=>{
+  const s=document.getElementById('status');
+  if(REAL){
+    if(!state.videoPath){ s.textContent='Primero arrastra o elige el vídeo.'; return; }
+    try{
+      const title=document.getElementById('title').value;
+      const desc=document.getElementById('desc-en').value; // Vimeo en inglés
+      const r=await window.api.vimeoUpload(state.videoPath, title, desc);
+      document.getElementById('vimeo-url').value=r.link||'';
+      s.innerHTML='<b>Subido a Vimeo ✓</b> '+(r.link||'')+' · abriendo en el navegador';
+    }catch(e){ s.textContent='Error al subir a Vimeo: '+e.message; }
+  }else{
+    s.innerHTML='<b>Subiendo a Vimeo…</b> (demo) Sube el mp4 con el título y la descripción.';
+    setTimeout(()=>{ s.innerHTML='<b>Subido a Vimeo ✓</b> Abriendo el vídeo en el navegador… · ya puedes publicar'; },1400);
+  }
+});
+
+// ── Publicar ──
+function collectData(){
+  return {
+    type: state.type,
+    slug: document.getElementById('slug').value.trim(),
+    title: document.getElementById('title').value,
+    titleEs: document.getElementById('title-es').value,
+    titleEn: document.getElementById('title-en').value,
+    descEs: document.getElementById('desc-es').value,
+    descEn: document.getElementById('desc-en').value,
+    meta: document.getElementById('meta').value,
+    vimeoUrl: document.getElementById('vimeo-url').value.trim(),
+    videoPath: state.videoPath,
+    renderName: document.getElementById('render-name').value,
+    images: state.images.filter(i=>i.path).map(i=>({path:i.path, ext:i.ext})),
+  };
+}
+document.getElementById('btn-publish').addEventListener('click',async ()=>{
+  const s=document.getElementById('status');
+  if(REAL){
+    try{
+      const r=await window.api.publish(collectData());
+      s.innerHTML='<b>Publicado ✓</b> '+r.url+' · abriendo en el navegador';
+    }catch(e){ s.textContent='Error al publicar: '+e.message; }
+  }else{
+    s.innerHTML='<b>Publicando…</b> (demo) Genera la página, el clip del grid, lo añade al grid y lo sube a Hostinger.';
+    setTimeout(()=>{ s.innerHTML='<b>Publicado ✓</b> Abriendo zeitlindavid.com/work/'+ (document.getElementById('slug').value||'…') +' en el navegador'; },1600);
+  }
+});
+
+// Progreso desde el proceso principal
+if(REAL && window.api.onProgress){
+  window.api.onProgress(msg=>{ document.getElementById('status').textContent=msg; });
+}
+
+// ── Elegir vídeo e imágenes ──
+const dropClip=document.getElementById('drop-clip');
+if(dropClip){
+  dropClip.style.cursor='pointer';
+  dropClip.addEventListener('click',async ()=>{
+    if(!REAL) return;
+    const p=await window.api.pickVideo();
+    if(p){ state.videoPath=p; dropClip.querySelector('.big').textContent=p.split(/[\\/]/).pop(); }
+  });
+}
+const dropImages=document.getElementById('drop-images');
+if(dropImages){
+  dropImages.style.cursor='pointer';
+  dropImages.addEventListener('click',async ()=>{
+    if(!REAL) return;
+    const paths=await window.api.pickImages();
+    if(paths && paths.length){
+      state.images=paths.map(p=>({path:p, ext:(p.split('.').pop()||'jpg').toLowerCase()}));
+      renderGallery();
+    }
+  });
+}
+
+// ── Ajustes ──
+const modal=document.getElementById('settings-modal');
+document.getElementById('btn-settings').addEventListener('click',async ()=>{
+  if(REAL){
+    const c=await window.api.configGet();
+    document.getElementById('cfg-vimeo').value=c.vimeoToken||'';
+    document.getElementById('cfg-deepl').value=c.deeplKey||'';
+    document.getElementById('cfg-ftp-host').value=(c.ftp&&c.ftp.host)||'';
+    document.getElementById('cfg-ftp-user').value=(c.ftp&&c.ftp.user)||'';
+    document.getElementById('cfg-ftp-pass').value=(c.ftp&&c.ftp.password)||'';
+    refreshDots();
+  }
+  modal.classList.add('open');
+});
+document.getElementById('cfg-cancel').addEventListener('click',()=>modal.classList.remove('open'));
+modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('open'); });
+document.getElementById('cfg-save').addEventListener('click',async ()=>{
+  if(REAL){
+    await window.api.configSet({
+      vimeoToken:document.getElementById('cfg-vimeo').value.trim(),
+      deeplKey:document.getElementById('cfg-deepl').value.trim(),
+      ftp:{
+        host:document.getElementById('cfg-ftp-host').value.trim(),
+        user:document.getElementById('cfg-ftp-user').value.trim(),
+        password:document.getElementById('cfg-ftp-pass').value,
+        remoteRoot:'/public_html',
+      },
+    });
+    refreshDots();
+  }
+  modal.classList.remove('open');
+});
+async function refreshDots(){
+  if(!REAL) return;
+  const st=await window.api.configStatus();
+  document.getElementById('dot-vimeo').classList.toggle('ok',st.vimeo);
+  document.getElementById('dot-deepl').classList.toggle('ok',st.deepl);
+  document.getElementById('dot-ftp').classList.toggle('ok',st.ftp);
+}
+
+applyType();
+</script>
+</body>
+</html>
