@@ -1,6 +1,6 @@
 {
   "name": "zeitlin-publisher",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Publicador de proyectos para zeitlindavid.com",
   "main": "main.js",
   "author": "David Zeitlin",
@@ -12,10 +12,18 @@
   "build": {
     "appId": "com.zeitlin.publisher",
     "productName": "Zeitlin Publisher",
-    "files": ["main.js", "preload.js", "src/**/*", "lib/**/*", "node_modules/**/*"],
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "lib/**/*",
+      "node_modules/**/*"
+    ],
     "asarUnpack": [
       "node_modules/ffmpeg-static/**",
-      "node_modules/ffprobe-static/**"
+      "node_modules/ffprobe-static/**",
+      "node_modules/sharp/**",
+      "node_modules/@img/**"
     ],
     "mac": {
       "target": "dmg",
@@ -29,7 +37,8 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
-    }
+    },
+    "npmRebuild": false
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -39,6 +48,8 @@
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
     "tus-js-client": "^4.1.0",
-    "basic-ftp": "^5.0.5"
+    "basic-ftp": "^5.0.5",
+    "sharp": "^0.33.4",
+    "electron-updater": "^6.1.8"
   }
 }

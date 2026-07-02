@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Organizar · zeitlindavid.com</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+  :root{
+    --bg:#0a0a0a; --surface:#141414; --surface-2:#1c1c1c;
+    --line:#2a2a2a; --line-soft:#1e1e1e;
+    --text:#f4f4f4; --text-dim:#9a9a9a; --text-faint:#6a6a6a;
+    --accent:#0070ff; --accent-soft:rgba(0,112,255,0.12); --accent-line:rgba(0,112,255,0.4);
+    --r:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+  /* Header con pestañas */
+  header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(10,10,10,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  .mark{width:30px;height:30px;border:1.5px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .mark svg{width:15px;height:17px}
+  .tabs{display:flex;gap:4px;margin-left:6px}
+  .tab{background:transparent;border:none;color:var(--text-faint);font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .tab.active{background:var(--accent-soft);color:var(--text)}
+  .settings{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer}
+
+  /* Barra de navegación (migas) */
+  .navbar{display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line-soft);font-size:13px}
+  .crumb{color:var(--accent);font-weight:600;cursor:pointer}
+  .crumb.static{color:var(--text-faint);cursor:default}
+  .sep{color:var(--text-faint)}
+  .back{background:var(--surface);border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;margin-right:4px}
+
+  main{padding:18px;padding-bottom:90px;max-width:760px;margin:0 auto}
+
+  .hint-bar{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--text-dim);margin-bottom:18px;line-height:1.5}
+  .hint-bar b{color:var(--text)}
+
+  /* buscador */
+  .search{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;color:var(--text);font-family:inherit;font-size:14px;margin-bottom:16px;outline:none}
+  .search:focus{border-color:var(--accent-line)}
+  .search::placeholder{color:var(--text-faint)}
+  .search-empty{text-align:center;color:var(--text-faint);font-size:13px;padding:30px 0;display:none}
+
+  /* vídeos editables del proyecto */
+  .videos{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .vitem{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#15324f,#0a1825)}
+  .vitem .play{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center}
+  .vitem .play::after{content:"";border-left:15px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+  .vitem .vurl{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);font-size:10px;padding:4px 8px;border-radius:6px;color:var(--text-dim)}
+  .vitem .vtools{position:absolute;top:8px;right:8px;display:flex;gap:6px}
+  .vtools button{background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:11px;font-weight:600;padding:6px 10px;border-radius:7px;cursor:pointer}
+  .vadd{border:2px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--text-faint);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .vadd:hover{border-color:var(--accent-line);color:var(--accent);background:var(--accent-soft)}
+
+  /* GRID del index */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .proj{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .12s,box-shadow .15s;touch-action:none;user-select:none}
+  .proj .thumb{width:100%;height:100%}
+  .proj .label{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 8px;font-size:11px;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,0.85));line-height:1.3}
+  .proj .pos{position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center}
+  .proj .drag-dot{position:absolute;top:6px;right:6px;color:rgba(255,255,255,0.6);font-size:14px;letter-spacing:1px}
+  .proj.dragging{opacity:0.85;transform:scale(1.06);box-shadow:0 12px 30px rgba(0,0,0,0.6);z-index:10;border-color:var(--accent)}
+  .proj.shift{transition:transform .18s}
+
+  /* VISTA de proyecto */
+  .view-proj{display:none}
+  .player{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#15324f,#0a1825)}
+  .player .play{width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center}
+  .player .play::after{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
+  .player .badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);font-size:10px;font-weight:600;padding:4px 9px;border-radius:6px;color:var(--text-dim)}
+
+  .block{position:relative;border:1px dashed transparent;border-radius:10px;padding:12px;margin-bottom:8px;transition:border-color .15s,background .15s}
+  .block:hover{border-color:var(--line);background:var(--surface)}
+  .block .block-tag{position:absolute;top:-9px;left:12px;background:var(--bg);padding:0 6px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);opacity:0;transition:opacity .15s}
+  .block:hover .block-tag{opacity:1}
+  .block .move{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+  .block:hover .move{opacity:1}
+  .move button{width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--text-dim);font-size:13px;cursor:pointer}
+
+  .proj-title{font-size:22px;font-weight:600;margin-bottom:8px;outline:none}
+  .proj-desc{font-size:14px;line-height:1.6;color:var(--text-dim);outline:none}
+  .editable{cursor:text;border-radius:5px;transition:background .15s}
+  .editable:focus{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent-line)}
+  .edit-pencil{display:inline-block;margin-left:6px;font-size:11px;color:var(--accent);opacity:0;transition:opacity .15s}
+  .block:hover .edit-pencil{opacity:1}
+
+  /* Galería editable */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .gitem{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;touch-action:none;user-select:none;border:2px solid transparent;transition:border-color .15s,transform .12s}
+  .gitem .gthumb{width:100%;height:100%}
+  .gitem .gpos{position:absolute;top:5px;left:5px;background:rgba(0,0,0,0.7);font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px}
+  .gitem .gtools{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center;gap:8px}
+  .gitem:hover .gtools{display:flex}
+  .gtools button{width:32px;height:32px;border-radius:7px;border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:13px;cursor:pointer}
+  .gitem.dragging{opacity:0.85;transform:scale(1.08);z-index:10;border-color:var(--accent)}
+  .gadd{aspect-ratio:1;border:2px dashed var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--text-faint);font-size:11px;font-weight:600;transition:all .15s}
+  .gadd:hover{border-color:var(--accent-line);color:var(--accent);background:var(--accent-soft)}
+  .gadd .plus{font-size:24px;line-height:1}
+
+  /* prev/next */
+  .pn{display:flex;justify-content:space-between;margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--text-faint)}
+  .pn b{color:var(--text-dim);font-weight:600}
+
+  /* Barra inferior guardar */
+  .savebar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+  .savebar .status{flex:1;font-size:12px;color:var(--text-dim)}
+  .savebar .status b{color:var(--accent);font-weight:600}
+  .btn-discard{background:transparent;border:1px solid var(--line);color:var(--text-dim);font-family:inherit;font-size:12px;font-weight:600;padding:11px 16px;border-radius:9px;cursor:pointer}
+  .btn-save{background:var(--accent);color:#fff;border:none;font-family:inherit;font-size:13px;font-weight:600;padding:11px 22px;border-radius:9px;cursor:pointer;opacity:0.5;pointer-events:none;transition:opacity .2s}
+  .btn-save.ready{opacity:1;pointer-events:auto}
+
+  /* Pestaña Publicar (placeholder) */
+  .view-publish{display:none;padding:40px 18px;text-align:center;color:var(--text-faint)}
+  .view-publish .big{font-size:15px;color:var(--text-dim);margin-bottom:8px}
+
+  /* zona de peligro · eliminar */
+  .danger-zone{margin-top:26px;padding-top:18px;border-top:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .danger-zone .dz-text{font-size:11px;color:var(--text-faint);line-height:1.4}
+  .btn-delete{flex:0 0 auto;background:transparent;border:1px solid rgba(255,80,80,0.4);color:#ff6b6b;font-family:inherit;font-size:13px;font-weight:600;padding:11px 18px;border-radius:9px;cursor:pointer;transition:all .15s}
+  .btn-delete:hover{background:rgba(255,80,80,0.12);border-color:rgba(255,80,80,0.7)}
+
+  /* modal de confirmación */
+  .confirm-bg{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px}
+  .confirm-bg.open{display:flex}
+  .confirm{background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:390px;width:100%;padding:26px;text-align:center}
+  .confirm h3{font-size:17px;font-weight:600;margin-bottom:10px}
+  .confirm p{font-size:13px;color:var(--text-dim);line-height:1.55;margin-bottom:22px}
+  .confirm .pn-name{color:var(--text);font-weight:600}
+  .confirm-actions{display:flex;gap:10px}
+  .confirm-actions button{flex:1;font-family:inherit;font-size:13px;font-weight:600;padding:12px;border-radius:9px;cursor:pointer}
+  .confirm-cancel{background:transparent;border:1px solid var(--line);color:var(--text-dim)}
+  .confirm-delete{background:#e23b3b;border:none;color:#fff}
+
+  /* menú contextual */
+  .ctx{position:fixed;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:6px;z-index:200;display:none;min-width:170px;box-shadow:0 12px 30px rgba(0,0,0,0.5)}
+  .ctx button{display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;border-radius:7px;cursor:pointer}
+  .ctx button:hover{background:var(--accent-soft)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="mark"><svg viewBox="0 0 40 44" fill="none" stroke="#f4f4f4" stroke-width="2"><path d="M8 6h24M14 6v8l-6 24h24l-6-24V6"/></svg></div>
+  <div class="tabs">
+    <button class="tab" id="tab-publicar">Publicar</button>
+    <button class="tab active" id="tab-organizar">Organizar</button>
+  </div>
+  <button class="settings">⚙ Ajustes</button>
+</header>
+
+<!-- PESTAÑA PUBLICAR (placeholder) -->
+<div class="view-publish" id="view-publish">
+  <div class="big">Esta es la herramienta de publicar que ya tienes.</div>
+  <div>Aquí iría la pantalla de subir un proyecto nuevo.</div>
+</div>
+
+<!-- PESTAÑA ORGANIZAR -->
+<div id="view-organizar">
+  <div class="navbar">
+    <button class="back" id="btn-back" style="display:none">‹ Volver</button>
+    <span class="crumb" id="crumb-home">Inicio</span>
+    <span class="sep" id="crumb-sep" style="display:none">›</span>
+    <span class="crumb static" id="crumb-proj" style="display:none"></span>
+  </div>
+
+  <main>
+    <!-- VISTA INDEX -->
+    <div id="view-index">
+      <div class="hint-bar">Este es tu portfolio tal cual se ve en la web. <b>Mantén pulsada</b> una pieza y arrástrala para cambiar su orden. <b>Toca</b> una para entrar y editarla. Los Anterior y Siguiente proyecto se recalculan solos.</div>
+      <input class="search" id="search" placeholder="Buscar proyecto…  (prueba: foxy, coral, party)">
+      <div class="grid" id="grid"></div>
+      <div class="search-empty" id="search-empty">Ningún proyecto coincide con la búsqueda.</div>
+    </div>
+
+    <!-- VISTA PROYECTO -->
+    <div class="view-proj" id="view-proj">
+      <div class="block">
+        <span class="block-tag">Vídeos</span>
+        <div class="videos" id="proj-videos"></div>
+      </div>
+
+      <div class="block">
+        <span class="block-tag">Título</span>
+        <span class="move"><button title="Subir">↑</button><button title="Bajar">↓</button></span>
+        <div class="proj-title editable" contenteditable="true">Coral Coins &amp; Rewards Grabber<span class="edit-pencil">editar ✎</span></div>
+      </div>
+
+      <div class="block">
+        <span class="block-tag">Descripción</span>
+        <span class="move"><button title="Subir">↑</button><button title="Bajar">↓</button></span>
+        <div class="proj-desc editable" contenteditable="true">3D animation for Coral's economy system and Rewards Grabber: look development, modelling, texturing, lighting, rendering, still renders and animations.</div>
+      </div>
+
+      <div class="block">
+        <span class="block-tag">Galería</span>
+        <div class="gallery" id="proj-gallery"></div>
+      </div>
+
+      <div class="pn">
+        <span>‹ Anterior: <b id="pn-prev">…</b></span>
+        <span>Siguiente: <b id="pn-next">…</b> ›</span>
+      </div>
+
+      <div class="danger-zone">
+        <span class="dz-text">Despublicar lo oculta del grid pero conserva su página. Eliminar lo quita y manda sus archivos a la papelera.</span>
+        <div style="display:flex;gap:10px;flex:0 0 auto">
+          <button class="btn-discard" id="btn-unpublish">Despublicar</button>
+          <button class="btn-delete" id="btn-delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Barra guardar -->
+<div class="savebar" id="savebar">
+  <div class="status" id="save-status">Sin cambios pendientes</div>
+  <button class="btn-discard" id="btn-discard">Descartar</button>
+  <button class="btn-save" id="btn-save">Guardar cambios</button>
+</div>
+
+<!-- menú contextual de imagen -->
+<div class="ctx" id="ctx">
+  <button data-act="replace">Reemplazar imagen</button>
+  <button data-act="up">Mover antes</button>
+  <button data-act="down">Mover después</button>
+  <button data-act="remove" style="color:#ff6b6b">Quitar imagen</button>
+</div>
+
+<!-- confirmación de eliminar proyecto -->
+<div class="confirm-bg" id="confirm-modal">
+  <div class="confirm">
+    <h3>¿Eliminar este proyecto?</h3>
+    <p>Se quitará <span class="pn-name" id="confirm-name"></span> del grid y el resto se recoloca solo. Sus archivos se mueven a una papelera dentro de tu hosting, no se borran del todo, así que podrás recuperarlos o eliminarlos tú a mano cuando quieras.</p>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="confirm-cancel">Cancelar</button>
+      <button class="confirm-delete" id="confirm-delete">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Datos de ejemplo (tu grid real) ──
+const PROJECTS = [
+  {slug:'cgi-coral-coin-rewards-grabber', name:'Coral Coins & Rewards Grabber', hue:8},
+  {slug:'cgi-party-poker-tour-2026', name:'PartyPoker Tour 2026', hue:32},
+  {slug:'cgi-foxy-games-perks', name:'Foxy Games Perks', hue:320},
+  {slug:'cgi-generic-assets', name:'Generic Assets', hue:210},
+  {slug:'cgi-gala-summer-beach', name:'Gala Summer Beach', hue:185},
+  {slug:'cgi-foxy-hoedown-assets', name:'Foxy Hoedown Assets', hue:280},
+  {slug:'cgi-bwin-promo', name:'Bwin Promo', hue:48},
+  {slug:'cgi-ladbrokes-motion', name:'Ladbrokes Motion', hue:135},
+];
+let changes = 0;
+
+// ── Cambios / barra de guardar ──
+function markChanged(msg){
+  changes++;
+  const s=document.getElementById('save-status');
+  s.innerHTML = '<b>'+changes+(changes===1?' cambio sin guardar':' cambios sin guardar')+'</b>'+(msg?' · '+msg:'');
+  document.getElementById('btn-save').classList.add('ready');
+}
+document.getElementById('btn-save').addEventListener('click',()=>{
+  const s=document.getElementById('save-status');
+  s.innerHTML='<b>Guardando en tu web…</b> (demo)';
+  setTimeout(()=>{
+    s.textContent='Guardado ✓ tu web está actualizada';
+    changes=0;
+    document.getElementById('btn-save').classList.remove('ready');
+  },1400);
+});
+document.getElementById('btn-discard').addEventListener('click',()=>{
+  changes=0;
+  document.getElementById('save-status').textContent='Sin cambios pendientes';
+  document.getElementById('btn-save').classList.remove('ready');
+});
+
+// ── Render del grid ──
+const grid=document.getElementById('grid');
+function renderGrid(){
+  grid.innerHTML='';
+  PROJECTS.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='proj'; el.dataset.slug=p.slug;
+    el.innerHTML=`
+      <div class="thumb" style="background:linear-gradient(135deg,hsl(${p.hue},50%,32%),hsl(${(p.hue+40)%360},45%,18%))"></div>
+      <span class="pos">${i+1}</span>
+      <span class="drag-dot">⠿</span>
+      <span class="label">${p.name}</span>`;
+    attachReorder(el, grid, PROJECTS, ()=>renderGrid(), p);
+    grid.appendChild(el);
+  });
+}
+
+// ── Reordenar con pulsar y arrastrar (funciona en móvil y ratón) ──
+// Distingue tap (entrar) de arrastre (reordenar) por el movimiento.
+function attachReorder(el, container, arr, rerender, payload){
+  let startX, startY, dragging=false, moved=false, pointerId=null;
+  el.addEventListener('pointerdown', e=>{
+    startX=e.clientX; startY=e.clientY; moved=false; dragging=false; pointerId=e.pointerId;
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener('pointermove', e=>{
+    if(pointerId!==e.pointerId) return;
+    const dx=Math.abs(e.clientX-startX), dy=Math.abs(e.clientY-startY);
+    if(!dragging && (dx>8||dy>8)){ dragging=true; moved=true; el.classList.add('dragging'); }
+    if(dragging){
+      const over=document.elementFromPoint(e.clientX,e.clientY);
+      const overItem=over&&over.closest(el.className.includes('gitem')?'.gitem':'.proj');
+      if(overItem && overItem!==el && overItem.parentElement===container){
+        const items=[...container.children];
+        const from=items.indexOf(el), to=items.indexOf(overItem);
+        if(from<to) container.insertBefore(el, overItem.nextSibling);
+        else container.insertBefore(el, overItem);
+      }
+    }
+  });
+  el.addEventListener('pointerup', e=>{
+    if(pointerId!==e.pointerId) return;
+    if(dragging){
+      el.classList.remove('dragging');
+      // reconstruir el orden del array segun el DOM
+      const order=[...container.children].map(c=>c.dataset.slug||c.dataset.id);
+      arr.sort((a,b)=>order.indexOf(a.slug||a.id)-order.indexOf(b.slug||b.id));
+      rerender();
+      markChanged('nuevo orden');
+    } else if(!moved && payload && payload.slug){
+      openProject(payload);
+    }
+    dragging=false; pointerId=null;
+  });
+}
+
+// ── Navegación index <-> proyecto ──
+let currentProj=null;
+function openProject(p){
+  currentProj=p;
+  const idx=PROJECTS.findIndex(x=>x.slug===p.slug);
+  document.getElementById('view-index').style.display='none';
+  document.getElementById('view-proj').style.display='block';
+  document.getElementById('btn-back').style.display='inline-block';
+  document.getElementById('crumb-sep').style.display='inline';
+  const cp=document.getElementById('crumb-proj');
+  cp.style.display='inline'; cp.textContent=p.name;
+  // prev/next circular
+  document.getElementById('pn-prev').textContent=PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length].name;
+  document.getElementById('pn-next').textContent=PROJECTS[(idx+1)%PROJECTS.length].name;
+  document.querySelector('.proj-title').firstChild.textContent=p.name;
+  renderVideos();
+  renderProjGallery();
+  window.scrollTo(0,0);
+}
+function goHome(){
+  document.getElementById('view-proj').style.display='none';
+  document.getElementById('view-index').style.display='block';
+  document.getElementById('btn-back').style.display='none';
+  document.getElementById('crumb-sep').style.display='none';
+  document.getElementById('crumb-proj').style.display='none';
+  window.scrollTo(0,0);
+}
+document.getElementById('btn-back').addEventListener('click',goHome);
+document.getElementById('crumb-home').addEventListener('click',goHome);
+
+// ── Galería del proyecto (editable) ──
+let galImgs=[0,1,2,3,4];
+const pg=document.getElementById('proj-gallery');
+function renderProjGallery(){
+  pg.innerHTML='';
+  galImgs.forEach((h,i)=>{
+    const hue=(h*53)%360;
+    const el=document.createElement('div');
+    el.className='gitem'; el.dataset.id='g'+h;
+    el.innerHTML=`
+      <div class="gthumb" style="background:linear-gradient(135deg,hsl(${hue},45%,30%),hsl(${(hue+40)%360},40%,18%))"></div>
+      <span class="gpos">${String(i+1).padStart(2,'0')}</span>
+      <div class="gtools">
+        <button title="Reemplazar" data-act="replace">⟳</button>
+        <button title="Quitar" data-act="remove">✕</button>
+      </div>`;
+    el.querySelector('[data-act="replace"]').addEventListener('click',ev=>{ev.stopPropagation();markChanged('imagen reemplazada');});
+    el.querySelector('[data-act="remove"]').addEventListener('click',ev=>{ev.stopPropagation();galImgs.splice(i,1);renderProjGallery();markChanged('imagen quitada');});
+    // reorder galeria
+    const arr=galImgs.map(x=>({id:'g'+x}));
+    attachReorderGallery(el);
+    pg.appendChild(el);
+  });
+  const add=document.createElement('div');
+  add.className='gadd';
+  add.innerHTML='<span class="plus">+</span>Añadir';
+  add.addEventListener('click',()=>{ galImgs.push(Math.max(...galImgs,0)+1); renderProjGallery(); markChanged('imagen añadida'); });
+  pg.appendChild(add);
+}
+function attachReorderGallery(el){
+  let sx,sy,drag=false,pid=null;
+  el.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;drag=false;pid=e.pointerId;el.setPointerCapture(e.pointerId);});
+  el.addEventListener('pointermove',e=>{
+    if(pid!==e.pointerId) return;
+    if(!drag && (Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){drag=true;el.classList.add('dragging');}
+    if(drag){
+      const over=document.elementFromPoint(e.clientX,e.clientY);
+      const oi=over&&over.closest('.gitem');
+      if(oi&&oi!==el&&oi.parentElement===pg){
+        const items=[...pg.querySelectorAll('.gitem')];
+        if(items.indexOf(el)<items.indexOf(oi)) pg.insertBefore(el,oi.nextSibling);
+        else pg.insertBefore(el,oi);
+      }
+    }
+  });
+  el.addEventListener('pointerup',e=>{
+    if(pid!==e.pointerId) return;
+    if(drag){
+      el.classList.remove('dragging');
+      const order=[...pg.querySelectorAll('.gitem')].map(c=>c.dataset.id);
+      galImgs.sort((a,b)=>order.indexOf('g'+a)-order.indexOf('g'+b));
+      renderProjGallery(); markChanged('galería reordenada');
+    }
+    drag=false;pid=null;
+  });
+}
+
+// ── Editar textos: marca cambio al escribir ──
+document.querySelectorAll('.editable').forEach(el=>{
+  el.addEventListener('input',()=>markChanged('texto editado'));
+});
+// mover bloques (texto arriba/abajo del vídeo)
+document.querySelectorAll('.block .move button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const block=b.closest('.block');
+    const sib=b.title==='Subir'?block.previousElementSibling:block.nextElementSibling;
+    if(sib&&sib.classList.contains('block')){
+      if(b.title==='Subir') block.parentNode.insertBefore(block,sib);
+      else block.parentNode.insertBefore(sib,block);
+      markChanged('bloque movido');
+    }
+  });
+});
+
+// ── Eliminar proyecto (con confirmación) ──
+const confirmModal=document.getElementById('confirm-modal');
+document.getElementById('btn-delete').addEventListener('click',()=>{
+  if(!currentProj) return;
+  document.getElementById('confirm-name').textContent=currentProj.name;
+  confirmModal.classList.add('open');
+});
+document.getElementById('confirm-cancel').addEventListener('click',()=>confirmModal.classList.remove('open'));
+confirmModal.addEventListener('click',e=>{ if(e.target===confirmModal) confirmModal.classList.remove('open'); });
+document.getElementById('confirm-delete').addEventListener('click',()=>{
+  const idx=PROJECTS.findIndex(x=>x.slug===currentProj.slug);
+  if(idx>=0) PROJECTS.splice(idx,1);
+  confirmModal.classList.remove('open');
+  goHome();
+  renderGrid();
+  markChanged('proyecto eliminado · irá a la papelera al guardar');
+});
+
+// ── Buscador del index ──
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase().trim();
+  let visible=0;
+  document.querySelectorAll('#grid .proj').forEach(el=>{
+    const p=PROJECTS.find(x=>x.slug===el.dataset.slug);
+    const match=!q || (p && (p.name.toLowerCase().includes(q)||p.slug.toLowerCase().includes(q)));
+    el.style.display=match?'':'none';
+    if(match) visible++;
+  });
+  document.getElementById('search-empty').style.display=visible?'none':'block';
+});
+
+// ── Vídeos editables del proyecto ──
+let projVideos=[{id:'v1',url:'vimeo.com/1199309556'}];
+const pv=document.getElementById('proj-videos');
+function renderVideos(){
+  pv.innerHTML='';
+  projVideos.forEach((v,i)=>{
+    const el=document.createElement('div');
+    el.className='vitem';
+    el.innerHTML=`
+      <span class="vurl">${v.url}</span>
+      <div class="vtools">
+        <button data-act="replace">Cambiar URL</button>
+        ${projVideos.length>1?'<button data-act="remove">Quitar</button>':''}
+      </div>
+      <div class="play"></div>`;
+    el.querySelector('[data-act="replace"]').addEventListener('click',ev=>{
+      ev.stopPropagation();
+      markChanged('vídeo reemplazado por otra URL de Vimeo');
+    });
+    const rm=el.querySelector('[data-act="remove"]');
+    if(rm) rm.addEventListener('click',ev=>{ev.stopPropagation();projVideos.splice(i,1);renderVideos();markChanged('vídeo quitado');});
+    pv.appendChild(el);
+  });
+  const add=document.createElement('div');
+  add.className='vadd';
+  add.textContent='+  Añadir otro vídeo (pegar URL de Vimeo)';
+  add.addEventListener('click',()=>{ projVideos.push({id:'v'+Date.now(),url:'vimeo.com/nuevo'}); renderVideos(); markChanged('vídeo añadido'); });
+  pv.appendChild(add);
+}
+
+// ── Despublicar (oculta del grid, conserva la página) ──
+document.getElementById('btn-unpublish').addEventListener('click',()=>{
+  const idx=PROJECTS.findIndex(x=>x.slug===currentProj.slug);
+  if(idx>=0) PROJECTS.splice(idx,1);
+  goHome(); renderGrid();
+  markChanged('proyecto despublicado · la página se conserva');
+});
+
+// ── Pestañas ──
+document.getElementById('tab-publicar').addEventListener('click',()=>{
+  document.getElementById('tab-publicar').classList.add('active');
+  document.getElementById('tab-organizar').classList.remove('active');
+  document.getElementById('view-organizar').style.display='none';
+  document.getElementById('view-publish').style.display='block';
+});
+document.getElementById('tab-organizar').addEventListener('click',()=>{
+  document.getElementById('tab-organizar').classList.add('active');
+  document.getElementById('tab-publicar').classList.remove('active');
+  document.getElementById('view-organizar').style.display='block';
+  document.getElementById('view-publish').style.display='none';
+});
+
+renderGrid();
+</script>
+</body>
+</html>

@@ -19,10 +19,26 @@ contextBridge.exposeInMainWorld('api', {
   configSet: (partial) => ipcRenderer.invoke('config-set', partial),
 
   // Acciones principales
+  loadSite: () => ipcRenderer.invoke('load-site'),
+  saveGrid: (payload) => ipcRenderer.invoke('save-grid', payload),
+  testConnections: () => ipcRenderer.invoke('test-connections'),
+  loadProject: (slug) => ipcRenderer.invoke('load-project', slug),
+  saveProject: (slug, edits) => ipcRenderer.invoke('save-project', { slug, edits }),
+  healthScan: () => ipcRenderer.invoke('health-scan'),
   translate: (text, target) => ipcRenderer.invoke('translate', { text, target }),
   vimeoUpload: (videoPath, title, description) =>
     ipcRenderer.invoke('vimeo-upload', { videoPath, title, description }),
   publish: (data) => ipcRenderer.invoke('publish', data),
+
+  // Gestor de archivos
+  fmList: (dirRel) => ipcRenderer.invoke('fm-list', dirRel),
+  fmUpload: (dirRel) => ipcRenderer.invoke('fm-upload', dirRel),
+  fmUploadPaths: (dirRel, paths) => ipcRenderer.invoke('fm-upload-paths', { dirRel, paths }),
+  fmDownload: (remoteRel) => ipcRenderer.invoke('fm-download', remoteRel),
+  fmRename: (fromRel, toRel) => ipcRenderer.invoke('fm-rename', { fromRel, toRel }),
+  fmMove: (items, toDirRel) => ipcRenderer.invoke('fm-move', { items, toDirRel }),
+  fmDelete: (items) => ipcRenderer.invoke('fm-delete', items),
+  fmMkdir: (dirRel) => ipcRenderer.invoke('fm-mkdir', dirRel),
 
   // Escuchar mensajes de progreso desde el proceso principal
   onProgress: (cb) => ipcRenderer.on('progress', (_e, msg) => cb(msg)),

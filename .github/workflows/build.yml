@@ -30,6 +30,8 @@ jobs:
         with:
           node-version: 20
       - run: npm install
+      - name: Asegurar binarios de sharp para Windows
+        run: npm install --os=win32 --cpu=x64 sharp
       - run: npx electron-builder --win --publish never
       - uses: actions/upload-artifact@v4
         with:
